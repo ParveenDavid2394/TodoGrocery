@@ -40,9 +40,11 @@ function manageItem(e) {
 
     // condition to separate add items to list and edit exisiting items on list
     if (value && !editFlag) {
-        
+
         // add items to the list
         addToList(value);
+
+        // display alert
         displayAlert('Item successfully added', 'success');
 
     } else if (value && editFlag){
@@ -53,12 +55,13 @@ function manageItem(e) {
         displayAlert('Item edited', 'success');
 
         // edit in local storage
-        // editLocalStorage(editID, value);
+        editLocalStorage(editID, value);
 
         // set back to default
         setBackToDefault();
 
     } else {
+
         // trying to enter empty string 
         displayAlert('Please enter a value', 'danger');
     }
@@ -116,7 +119,7 @@ function addToList(value){
     container.classList.add('show-container'); 
 
     // add to local storage
-    //addToLocalStorage(id, value);
+    addToLocalStorage(id, value);
 
     // set inputs buttons back to default
     setBackToDefault();
@@ -141,12 +144,14 @@ function deleteItem(e) {
 
     // display alert
     displayAlert('Item deleted', 'danger');
+    
+    // remove from local storage
+    removeFromLocalStorage(id);
 
     // set inputs buttons back to default
     setBackToDefault();
 
-    // remove from local storage
-    //removeFromLocalStorage(id);
+    
 }
 
 // edit item
@@ -211,8 +216,8 @@ function clearItems() {
     // set everything back to default
     setBackToDefault();
 
-    // clear from local storage
-    //localStorage.removeItem('list');
+    // clear from local storage -> deletes the whole list using the key
+    localStorage.removeItem('list');
 
     // display alert
     displayAlert('List Emptied', 'danger');
@@ -220,19 +225,69 @@ function clearItems() {
 
 
 // ******************** LOCAL STORAGE ***********************
+// local storage API -> saves as keys and values and as strings
+// few methods -> getItem, setItem, removeItem
+
 function addToLocalStorage(id, value){
-   
+    // create object using id and value
+    const groceryItem = {id,value};
+
+    const items = getLocalStorage();
+
+    // append groceryItems in list
+    items.push(groceryItem);
+
+    // add the items list into local storage
+    localStorage.setItem("list",JSON.stringify(items));
 }
 
 function removeFromLocalStorage(id) {
+    let items = getLocalStorage();
     
+    items = items.filter( (item)=>{
+        if (item.id !== id) {
+            return item;
+        }
+    });
+
+    // add the items list into local storage
+    localStorage.setItem("list", JSON.stringify(items));
+
 }
 
-function editLocalStorage(id) {
+function editLocalStorage(id,value) {
 
+    let items = getLocalStorage();
+
+    items = items.map( (item) =>{
+        if (item.id === id) {
+            item.value = value;
+        }
+
+        return item;
+    });
+
+    // add the items list into local storage
+    localStorage.setItem("list", JSON.stringify(items));
 }
 
-
+// check to see if there is an existing list in local storage, if no,create one
+function getLocalStorage() {
+    return localStorage.getItem("list") ? JSON.parse(localStorage.getItem("list")) : [];
+}
 
 
 // ********************* SETUP ITEMS ***********************
+
+
+/*
+    How JSON and localstorage work together
+
+    local storage needs a key and a value pair. Value pair need to be saved in strings
+
+    so to change values into strings, use JSON.stringify();
+
+    when getting back an item from local storage, it will return in string,
+
+    so need to JSON.parse() the whole thing to convert it into its original form  
+*/
