@@ -26,7 +26,8 @@ clearBtn.addEventListener('click', ()=>{
     }
 });
 
-
+// setup items that are in local storage once DOM is loaded
+window.addEventListener('DOMContentLoaded', setupItems); 
 
 // ***************** FUNCTIONS *******************
 
@@ -41,8 +42,11 @@ function manageItem(e) {
     // condition to separate add items to list and edit exisiting items on list
     if (value && !editFlag) {
 
+        // create id for each item using date time functionality
+        const id = new Date().getTime().toString();
+
         // add items to the list
-        addToList(value);
+        addToList(id,value);
 
         // display alert
         displayAlert('Item successfully added', 'success');
@@ -68,7 +72,7 @@ function manageItem(e) {
 }
 
 // add item to the list
-function addToList(value){
+function addToList(id, value){
 
     // create element
     const element = document.createElement('article');
@@ -78,9 +82,6 @@ function addToList(value){
 
     // create id attribute for element
     const attr = document.createAttribute('data-id');
-
-    // create id for each item using date time functionality
-    const id = new Date().getTime().toString();
 
     // set id value to id attribute
     attr.value = id;
@@ -278,7 +279,17 @@ function getLocalStorage() {
 
 
 // ********************* SETUP ITEMS ***********************
+function setupItems(){
+    let items = getLocalStorage();
 
+    if (items.length > 0) {
+        items.forEach( (item) =>{
+            addToList(item.id, item.value);
+        });
+
+        container.classList.add('show-container');
+    }
+}
 
 /*
     How JSON and localstorage work together
