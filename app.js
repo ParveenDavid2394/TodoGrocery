@@ -16,13 +16,23 @@ let editID = "";
 // create id for each item
 const id = new Date().getTime.toString();
 
-// ****** EVENT LISTENERS **********
+
+
+// ***************** EVENT LISTENERS **********************
+
 // submit form
 form.addEventListener('submit', addItem);
 
+// clear items
+clearBtn.addEventListener('click', ()=>{
+    if (confirm('Are you sure?')) {
+        clearItems();
+    }
+});
 
 
-// ****** FUNCTIONS **********
+
+// ***************** FUNCTIONS *******************
 
 function addItem(e) {
     // prevent default behaviour
@@ -77,11 +87,34 @@ function addToList(value){
 					</button>
                 </div>`;
                 
+    // select both edit and delete buttons
+    const deleteBtn = element.querySelector('.delete-btn');
+    const editBtn = element.querySelector('.edit-btn');
+
+    // add eventlistener to both the buttons
+    deleteBtn.addEventListener('click', ()=>{
+        if (confirm('Are you sure?')) {
+            deleteItem();
+        }
+    });
+
+    editBtn.addEventListener('click', editItem);
+
     // append element to parent list ( grocery-list)
     list.appendChild(element);
 
     // add show-container class to the parent container
     container.classList.add('show-container'); 
+}
+
+// delete item
+function deleteItem() {
+    console.log('delete item');
+}
+
+// edit item
+function editItem() {
+    console.log('edit item');
 }
 
 // display alert function 
@@ -108,11 +141,37 @@ function setBackToDefault(){
     submitBtn.textContent = 'Enter';
 }
 
-// ****** LOCAL STORAGE **********
+// clear items in list
+function clearItems() {
+    // target all items with 'grocery-items' class
+    const items = document.querySelectorAll('.grocery-item');
+
+    // loop thru and remove one by one using parent element
+    items.forEach( (item) =>{
+        list.removeChild(item);
+    })
+
+    // hide container once everything is cleared
+    container.classList.remove('show-container');
+
+    // set everything back to default
+    setBackToDefault();
+
+    // clear from local storage
+    //localStorage.removeItem('list');
+
+    // display alert
+    displayAlert('List Emptied', 'danger');
+}
+
+
+// ******************** LOCAL STORAGE ***********************
 function addToLocalStorage(id, value){
     console.log('added to local storage');
 }
 
 
 
-// ****** SETUP ITEMS **********
+
+
+// ********************* SETUP ITEMS ***********************
