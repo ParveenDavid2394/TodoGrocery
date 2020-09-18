@@ -14,14 +14,14 @@ let editFlag = false;
 let editID = "";
 
 // create id for each item
-const id = new Date().getTime.toString();
+const id = new Date().getTime().toString();
 
 
 
 // ***************** EVENT LISTENERS **********************
 
 // submit form
-form.addEventListener('submit', addItem);
+form.addEventListener('submit', manageItem);
 
 // clear items
 clearBtn.addEventListener('click', ()=>{
@@ -34,7 +34,8 @@ clearBtn.addEventListener('click', ()=>{
 
 // ***************** FUNCTIONS *******************
 
-function addItem(e) {
+// main function
+function manageItem(e) {
     // prevent default behaviour
     e.preventDefault();
 
@@ -46,8 +47,6 @@ function addItem(e) {
         // add items to the list
         addToList(value);
         displayAlert('Item successfully added', 'success');
-        addToLocalStorage(id, value);
-        setBackToDefault();
 
     } else if (value && editFlag){
 
@@ -61,6 +60,7 @@ function addItem(e) {
 
 // add item to the list
 function addToList(value){
+
     // create element
     const element = document.createElement('article');
 
@@ -78,23 +78,23 @@ function addToList(value){
 
     // enter child element and value into element
     element.innerHTML = `<p class="title">${value}</p>
-				<div class="btn-container">
-					<button type="button" class="edit-btn">
-						<i class="fas fa-edit"></i>
-					</button>
-					<button type="button" class="delete-btn">
-						<i class="fas fa-trash"></i>
-					</button>
-                </div>`;
+                         <div class="btn-container">
+                            <button type="button" class="edit-btn">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="delete-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                         </div>`;
                 
     // select both edit and delete buttons
     const deleteBtn = element.querySelector('.delete-btn');
     const editBtn = element.querySelector('.edit-btn');
 
     // add eventlistener to both the buttons
-    deleteBtn.addEventListener('click', ()=>{
+    deleteBtn.addEventListener('click', (e)=>{
         if (confirm('Are you sure?')) {
-            deleteItem();
+            deleteItem(e);
         }
     });
 
@@ -105,11 +105,38 @@ function addToList(value){
 
     // add show-container class to the parent container
     container.classList.add('show-container'); 
+
+    // add to local storage
+    //addToLocalStorage(id, value);
+
+    // set inputs buttons back to default
+    setBackToDefault();
 }
 
 // delete item
-function deleteItem() {
-    console.log('delete item');
+function deleteItem(e) {
+    // get element where event listener is attached
+    const element = e.currentTarget;
+
+    // get parent's parent element
+    const parentElement = element.parentElement.parentElement;
+    
+    // use the list parent container to remove the parent element
+    list.removeChild(parentElement);
+
+    // if no items left in list, then hide the container
+    if(list.children.length <= 0){
+        container.classList.remove('show-container');
+    }
+
+    // display alert
+    displayAlert('Item deleted', 'danger');
+
+    // set inputs buttons back to default
+    setBackToDefault();
+
+    // remove from local storage
+    //removeFromLocalStorage(id);
 }
 
 // edit item
@@ -167,7 +194,11 @@ function clearItems() {
 
 // ******************** LOCAL STORAGE ***********************
 function addToLocalStorage(id, value){
-    console.log('added to local storage');
+    // console.log('added to local storage');
+}
+
+function removeFromLocalStorage(id) {
+    
 }
 
 
