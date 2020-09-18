@@ -13,10 +13,6 @@ let editElement;
 let editFlag = false;
 let editID = "";
 
-// create id for each item
-const id = new Date().getTime().toString();
-
-
 
 // ***************** EVENT LISTENERS **********************
 
@@ -44,13 +40,23 @@ function manageItem(e) {
 
     // condition to separate add items to list and edit exisiting items on list
     if (value && !editFlag) {
+        
         // add items to the list
         addToList(value);
         displayAlert('Item successfully added', 'success');
 
     } else if (value && editFlag){
 
-        console.log('edit item on list');
+        editElement.innerHTML = value;
+
+        // display alert
+        displayAlert('Item edited', 'success');
+
+        // edit in local storage
+        // editLocalStorage(editID, value);
+
+        // set back to default
+        setBackToDefault();
 
     } else {
         // trying to enter empty string 
@@ -69,6 +75,9 @@ function addToList(value){
 
     // create id attribute for element
     const attr = document.createAttribute('data-id');
+
+    // create id for each item using date time functionality
+    const id = new Date().getTime().toString();
 
     // set id value to id attribute
     attr.value = id;
@@ -115,14 +124,15 @@ function addToList(value){
 
 // delete item
 function deleteItem(e) {
-    // get element where event listener is attached
-    const element = e.currentTarget;
 
-    // get parent's parent element
-    const parentElement = element.parentElement.parentElement;
+    // get element where event listener is attached which is the parent's parent element
+    const element = e.currentTarget.parentElement.parentElement;
+
+    // get the id of the element
+    const id = element.dataset.id;
     
     // use the list parent container to remove the parent element
-    list.removeChild(parentElement);
+    list.removeChild(element);
 
     // if no items left in list, then hide the container
     if(list.children.length <= 0){
@@ -140,9 +150,26 @@ function deleteItem(e) {
 }
 
 // edit item
-function editItem() {
-    console.log('edit item');
+function editItem(e) {
+
+    // get element where event listener is attached which is the parent's parent element
+    const element = e.currentTarget.parentElement.parentElement;
+    
+    // use querySelector to select the title from the p tag
+    editElement = element.querySelector('.title');
+
+    // place the title as the input's value
+    groceryInput.value = editElement.innerHTML;
+
+    // change editFlag to true
+    editFlag = true;
+
+    editID = element.dataset.id;
+
+    // change text on submit button
+    submitBtn.textContent = 'Edit';
 }
+
 
 // display alert function 
 function displayAlert(text, action){
@@ -194,13 +221,16 @@ function clearItems() {
 
 // ******************** LOCAL STORAGE ***********************
 function addToLocalStorage(id, value){
-    // console.log('added to local storage');
+   
 }
 
 function removeFromLocalStorage(id) {
     
 }
 
+function editLocalStorage(id) {
+
+}
 
 
 
