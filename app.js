@@ -51,6 +51,12 @@ function manageItem(e) {
         // display alert
         displayAlert('Item successfully added', 'success');
 
+        // add to local storage
+        addToLocalStorage(id, value);
+
+        // set inputs buttons back to default
+        setBackToDefault();
+
     } else if (value && editFlag){
 
         editElement.innerHTML = value;
@@ -118,12 +124,6 @@ function addToList(id, value){
 
     // add show-container class to the parent container
     container.classList.add('show-container'); 
-
-    // add to local storage
-    addToLocalStorage(id, value);
-
-    // set inputs buttons back to default
-    setBackToDefault();
 }
 
 // delete item
@@ -286,9 +286,10 @@ function setupItems(){
         items.forEach( (item) =>{
             addToList(item.id, item.value);
         });
-
-        container.classList.add('show-container');
+         
     }
+
+   
 }
 
 /*
